@@ -1,5 +1,6 @@
 const data = {
-  currentCardNumber: 5,
+  currentCardNumber: 1,
+  progress: 0,
   question2: null,
   question3: [],
   question4: null,
@@ -12,10 +13,33 @@ const data = {
 
 showCard(data.currentCardNumber);
 
-
-
-
-
+function updateProgress() {
+  const progressElement = document.querySelector("[data-progress-bar]");
+  let progress = 0;
+  if (data.question2) {
+    progress++;
+  }
+  if (data.question3.length) {
+    progress++;
+  }
+  if (data.question4) {
+    progress++;
+  }
+  if (data.question5.name) {
+    progress++;
+  }
+  if (data.question5.email) {
+    progress++;
+  }
+  if (data.question5.confirm) {
+    progress++;
+  }
+  if (progress === 6) {
+    progressElement.classList.add("bg-success");
+  }
+  progress = (progress / 6) * 100;
+  progressElement.style.width = `${progress}%`;
+}
 
 document.querySelector("[data-back]").addEventListener("click", (e) => {
   data.currentCardNumber -= 1;
@@ -32,56 +56,9 @@ document.querySelector("[data-start]").addEventListener("click", (e) => {
   showCard(data.currentCardNumber);
 });
 
-document.querySelector("[data-card='2']").addEventListener("click", (e) => {
-  let target = e.target.closest("li");
-  if (!target) {
-    return;
-  }
-  const inputElement = target.querySelector("input");
-  data.question4 = inputElement.value;
-  showCard(data.currentCardNumber);
-});
-
-document.querySelector("[data-card='3']").addEventListener("click", (e) => {
-  let target = e.target.closest(".card-slectable");
-  if (!target) {
-    return;
-  }
-  const inputElement = target.querySelector("input");
-  const value = inputElement.value;
-  toggleItem(data.question3, value);
-
-  showCard(data.currentCardNumber);
-});
-
-document.querySelector("[data-card='4']").addEventListener("click", (e) => {
-  let target = e.target.closest("li");
-  if (!target) {
-    return;
-  }
-  const inputElement = target.querySelector("input");
-  data.question4 = inputElement.value;
-  showCard(data.currentCardNumber);
-});
-
-const cardElement5 = document.querySelector("[data-card='5']")
-cardElement5.addEventListener('change',function(e){
-  let target = e.target.closest('[name]');
-  console.log( );
-  
-  if(target){
-    if(target.name === 'confirm'){
-      data.question5[target.name] = target.checked
-    }  else {
-      data.question5[target.name] = target.value
-    }
-  }
-  showCard(data.currentCardNumber);
-  
-})
-
-
 function showCard(n) {
+  updateProgress();
+
   if (n === 1 || n === 6) {
     hideFooter();
     hideHeader();
@@ -100,49 +77,13 @@ function showCard(n) {
   nextButton.disabled = true;
 
   if (n === 2) {
-    cardElement.querySelectorAll("input").forEach((inElem) => {
-      inElem.checked = false
-      if (inElem.value === data.question2) {
-        inElem.checked = true
-      }
-    });
-    if (data.question2) {
-      nextButton.disabled = false;
-    }
-  } 
-  else if (n === 3) {
-    cardElement.querySelectorAll("input").forEach((inElem) => {
-      inElem.checked = false
-      if (data.question3.includes(inElem.value)) {
-        inElem.checked = true
-      }
-    });
-    if (data.question3.length) {
-      nextButton.disabled = false;
-    }
-  } 
-  else if (n === 4) {
-    cardElement.querySelectorAll("input").forEach((inElem) => {
-      inElem.checked = false
-      if (inElem.value === data.question4) {
-        inElem.checked = true
-      }
-    });
-    if (data.question4) {
-      nextButton.disabled = false;
-    }
-  }
-
-  else if (n === 5) {
-    console.log()
-    if (data.question5.name != '' && data.question5.name.length > 5 &&
-       data.question5.email != '' && data.question5.email.length > 5 &&
-       data.question5.confirm )
-    {
-      nextButton.disabled = false;
-    } else {
-      nextButton.disabled = true;
-    }
+    showCard2();
+  } else if (n === 3) {
+    showCard3();
+  } else if (n === 4) {
+    showCard4();
+  } else if (n === 5) {
+    showCard5();
   }
 }
 
